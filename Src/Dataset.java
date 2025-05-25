@@ -10,44 +10,21 @@ public class Dataset {
 public ArrayList<Game> getGamesByPrice(int price) {
     ArrayList<Game> result = new ArrayList<>();
     if ("price".equals(sortedByAttribute)) {
-        int low = 0, high = data.size() - 1;
-        int found = -1;
-        // Búsqueda binaria para encontrar una posición con el precio buscado
-        while (low <= high) {
-            int mid = (low + high) / 2;
-            int midPrice = data.get(mid).getPrice();
-            if (midPrice == price) {
-                found = mid;
-                break;
-            } else if (midPrice < price) {
-                low = mid + 1;
-            } else {
-                high = mid - 1;
-            }
-        }
-        // Si se encontro el precio, recorre de izquierda a derecha 
-        if(found != -1) {
-            int left = found;
-            while (left -1 >=0 && data.get(left -1).getPrice() == price) {
-                left--;
-            }
-            int right = found;
-            while (right + 1 < data.size() && data.get(right + 1).getPrice() == price) {
-                right++;
-            }
-            for (int i = left; i <= right; i++) {
-                result.add(data.get(i));
-            }
-        }
+        // Búsqueda binaria
+        Comparator<Game> comparator = Comparator.comparingInt(Game::getPrice);
+        int idx = Collections.binarySearch(data, new Game(null, null, price, 0), comparator);
+        if (idx < 0) return result; // No encontrado
+        // Expandir a izquierda y derecha
+        int left = idx, right = idx;
+        while (left > 0 && data.get(left - 1).getPrice() == price) left--;
+        while (right < data.size() - 1 && data.get(right + 1).getPrice() == price) right++;
+        for (int i = left; i <= right; i++) result.add(data.get(i));
+        return result;
     } else {
-        // Búsqueda lineal si no está ordenado por precio
-        for (Game game : data) {
-            if (game.getPrice() == price) {
-                result.add(game);
-            }
-        }
+        // Búsqueda lineal
+        for (Game g : data) if (g.getPrice() == price) result.add(g);
+        return result;
     }
-    return result;
 }
 
     public ArrayList<Game> getGamesByPriceRange(int lowerPrice, int higherPrice) {
@@ -174,44 +151,38 @@ public ArrayList<Game> getGamesByPrice(int price) {
         return result;
     }
 
-    public void sortByAlgorithm(String algorithm, String attribute) {
-        Comparator<Game> comparator;
-        switch (attribute) {
-            case "price":
-                comparator = Comparator.comparingInt(Game::getPrice);
-                break;
-            case "category":
-                comparator = Comparator.comparing(Game::getCategory);
-                break;
-            case "quality":
-                comparator = Comparator.comparingInt(Game::getQuality);
-                break;
-            default:
-                comparator = Comparator.comparingInt(Game::getPrice);
-                attribute = "price";
-        }
-
-        switch (algorithm) {
-            case "bubbleSort":
-                bubbleSort(comparator);
-                break;
-            case "insertionSort":
-                insertionSort(comparator);
-                break;
-            case "selectionSort":
-                selectionSort(comparator);
-                break;
-            case "mergeSort":
-                data = mergeSort(data, comparator);
-                break;
-            case "quickSort":
-                quickSort(0, data.size() - 1, comparator);
-                break;
-            default:
-                Collections.sort(data, comparator);
-        }
-        sortedByAttribute = attribute;
+public void sortByAlgorithm(String algorithm, String attribute) {
+    Comparator<Game> comparator;
+    switch (attribute) {
+        case "price":
+            comparator = Comparator.comparingInt(Game::getPrice);
+            break;
+        case "category":
+            comparator = Comparator.comparing(Game::getCategory);
+            break;
+        case "quality":
+            comparator = Comparator.comparingInt(Game::getQuality);
+            break;
+        default:
+            comparator = Comparator.comparingInt(Game::getPrice);
+            attribute = "price"; // Actualiza el atributo real
     }
+    switch (algorithm) {
+        case "bubbleSort":
+            bubbleSort(comparator);
+            break;
+        case "quickSort":
+            quickSort(0, data.size() - 1, comparator);
+            break;
+        case "countingSort":
+            countingSort();
+            attribute = "quality"; // countingSort siempre ordena por calidad
+            break;
+        default:
+            data.sort(comparator);
+    }
+    this.sortedByAttribute = attribute;
+}
 
     // Métodos de ordenamiento auxiliares
 
