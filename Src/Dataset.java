@@ -267,4 +267,23 @@ public void sortByAlgorithm(String algorithm, String attribute) {
         return i + 1;
     }
 
+    // Ordena la lista data por calidad usando Counting Sort (de 0 a 100)
+    private void countingSort() {
+        int maxQuality = 100;
+        List<List<Game>> buckets = new ArrayList<>(maxQuality + 1);
+        // Inicializa los buckets
+        for (int i = 0; i <= maxQuality; i++) {
+            buckets.add(new ArrayList<>());
+        }
+        // Distribuye los juegos en los buckets según su calidad
+        for (Game g : data) {
+            buckets.get(g.getQuality()).add(g);
+        }
+        // Reconstruye la lista data ordenada por calidad
+        data.clear();
+        for (List<Game> bucket : buckets) {
+            data.addAll(bucket);
+        }
+    }
+
 }
