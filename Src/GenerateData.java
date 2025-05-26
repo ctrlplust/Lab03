@@ -1,4 +1,7 @@
 import java.util.*;
+import java.io.PrintWriter;
+import java.io.File;
+import java.io.IOException;
 
 public class GenerateData {
     private static final String[] palabras = {"Dragon", "Empire", "Quest", "Galaxy", "Legends", "Warrior"};
