@@ -23,4 +23,7 @@ public class Game {
     public int getQuality() {
         return quality;
     }
+        public String toCSV() {
+        return name + "," + category + "," + price + "," + quality;
+    }
 }
