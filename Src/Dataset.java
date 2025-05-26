@@ -286,4 +286,52 @@ public void sortByAlgorithm(String algorithm, String attribute) {
         }
     }
 
+    // Búsqueda lineal explícita por precio
+    public ArrayList<Game> getGamesByPriceLinear(int price) {
+        ArrayList<Game> result = new ArrayList<>();
+        for (Game g : data) if (g.getPrice() == price) result.add(g);
+        return result;
+    }
+
+    // Búsqueda binaria explícita por precio (requiere ordenado por price)
+    public ArrayList<Game> getGamesByPriceBinary(int price) {
+        if (!"price".equals(sortedByAttribute)) {
+            throw new IllegalStateException("El dataset debe estar ordenado por price para búsqueda binaria.");
+        }
+        return getGamesByPrice(price);
+    }
+
+    // Búsqueda lineal explícita por rango de precio
+    public ArrayList<Game> getGamesByPriceRangeLinear(int min, int max) {
+        ArrayList<Game> result = new ArrayList<>();
+        for (Game g : data) if (g.getPrice() >= min && g.getPrice() <= max) result.add(g);
+        return result;
+    }
+
+    // Búsqueda binaria explícita por rango de precio (requiere ordenado por price)
+    public ArrayList<Game> getGamesByPriceRangeBinary(int min, int max) {
+        if (!"price".equals(sortedByAttribute)) {
+            throw new IllegalStateException("El dataset debe estar ordenado por price para búsqueda binaria.");
+        }
+        return getGamesByPriceRange(min, max);
+    }
+
+    // Búsqueda lineal explícita por categoría
+    public ArrayList<Game> getGamesByCategoryLinear(String category) {
+        ArrayList<Game> result = new ArrayList<>();
+        for (Game g : data) if (g.getCategory().equals(category)) result.add(g);
+        return result;
+    }
+
+    // Búsqueda binaria explícita por categoría (requiere ordenado por category)
+    public ArrayList<Game> getGamesByCategoryBinary(String category) {
+        if (!"category".equals(sortedByAttribute)) {
+            throw new IllegalStateException("El dataset debe estar ordenado por category para búsqueda binaria.");
+        }
+        return getGamesByCategory(category);
+    }
+
+    public ArrayList<Game> getGames() {
+        return data;
+    }
 }

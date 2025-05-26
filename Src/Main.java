@@ -44,11 +44,56 @@ public class Main {
         }
     }
 
+    public static void probarBusquedas(Dataset dataset) {
+        System.out.println("\nTiempos de ejecución de búsqueda (dataset tamaño " + dataset.getGames().size() + "):");
+
+        // getGamesByPrice
+        long start = System.nanoTime();
+        dataset.getGamesByPriceLinear(50000);
+        long end = System.nanoTime();
+        System.out.printf("%-30s %-15s %.3f ms%n", "getGamesByPrice", "linearSearch", (end - start) / 1_000_000.0);
+
+        dataset.sortByAlgorithm("quickSort", "price");
+        start = System.nanoTime();
+        dataset.getGamesByPriceBinary(50000);
+        end = System.nanoTime();
+        System.out.printf("%-30s %-15s %.3f ms%n", "getGamesByPrice", "binarySearch", (end - start) / 1_000_000.0);
+
+        // getGamesByPriceRange
+        start = System.nanoTime();
+        dataset.getGamesByPriceRangeLinear(20000, 30000);
+        end = System.nanoTime();
+        System.out.printf("%-30s %-15s %.3f ms%n", "getGamesByPriceRange", "linearSearch", (end - start) / 1_000_000.0);
+
+        dataset.sortByAlgorithm("quickSort", "price");
+        start = System.nanoTime();
+        dataset.getGamesByPriceRangeBinary(20000, 30000);
+        end = System.nanoTime();
+        System.out.printf("%-30s %-15s %.3f ms%n", "getGamesByPriceRange", "binarySearch", (end - start) / 1_000_000.0);
+
+        // getGamesByCategory
+        start = System.nanoTime();
+        dataset.getGamesByCategoryLinear("RPG");
+        end = System.nanoTime();
+        System.out.printf("%-30s %-15s %.3f ms%n", "getGamesByCategory", "linearSearch", (end - start) / 1_000_000.0);
+
+        dataset.sortByAlgorithm("quickSort", "category");
+        start = System.nanoTime();
+        dataset.getGamesByCategoryBinary("RPG");
+        end = System.nanoTime();
+        System.out.printf("%-30s %-15s %.3f ms%n", "getGamesByCategory", "binarySearch", (end - start) / 1_000_000.0);
+    }
+
     public static void main(String[] args) {
         ArrayList<Game> juegos = GenerateData.generarJuegos(10000);
 
         probarOrdenamientos(juegos, Comparator.comparingInt(Game::getPrice), "precio");
         probarOrdenamientos(juegos, Comparator.comparing(Game::getCategory), "categoría");
         probarOrdenamientos(juegos, Comparator.comparingInt(Game::getQuality), "calidad");
+
+        // Pruebas de búsqueda solo para 1_000_000
+        ArrayList<Game> juegosGrandes = GenerateData.generarJuegos(1_000_000);
+        Dataset dataset = new Dataset(juegosGrandes);
+        probarBusquedas(dataset);
     }
 }
