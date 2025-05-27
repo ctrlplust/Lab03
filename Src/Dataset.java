@@ -31,7 +31,8 @@ public ArrayList<Game> getGamesByPrice(int price) {
         ArrayList<Game> result = new ArrayList<>();
         if ("price".equals(sortedByAttribute)) {
             int low = 0, high = data.size() - 1;
-            // Búsqueda binaria para encontrar el rango de precios
+            int found = -1;
+            // Búsqueda binaria para encontrar un elemento dentro del rango
             while (low <= high) {
                 int mid = (low + high) / 2;
                 int midPrice = data.get(mid).getPrice();
@@ -40,18 +41,27 @@ public ArrayList<Game> getGamesByPrice(int price) {
                 } else if (midPrice > higherPrice) {
                     high = mid - 1;
                 } else {
-                    // Encontró un precio dentro del rango
-                    int left = mid, right = mid;
-                    while (left - 1 >= 0 && data.get(left - 1).getPrice() >= lowerPrice) {
-                        left--;
-                    }
-                    while (right + 1 < data.size() && data.get(right + 1).getPrice() <= higherPrice) {
-                        right++;
-                    }
-                    for (int i = left; i <= right; i++) {
+                    found = mid;
+                    break;
+                }
+            }
+            if (found != -1) {
+                // Expandir a la izquierda
+                int left = found;
+                while (left - 1 >= 0 && data.get(left - 1).getPrice() >= lowerPrice) {
+                    left--;
+                }
+                // Expandir a la derecha
+                int right = found;
+                while (right + 1 < data.size() && data.get(right + 1).getPrice() <= higherPrice) {
+                    right++;
+                }
+                // Agregar todos los juegos en el rango
+                for (int i = left; i <= right; i++) {
+                    int price = data.get(i).getPrice();
+                    if (price >= lowerPrice && price <= higherPrice) {
                         result.add(data.get(i));
                     }
-                    break;
                 }
             }
         } else {

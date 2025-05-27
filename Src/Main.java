@@ -65,11 +65,12 @@ public class Main {
         end = System.nanoTime();
         System.out.printf("%-30s %-15s %.3f ms%n", "getGamesByPriceRange", "linearSearch", (end - start) / 1_000_000.0);
 
+
         dataset.sortByAlgorithm("quickSort", "price");
         start = System.nanoTime();
-        dataset.getGamesByPriceRangeBinary(20000, 30000);
+        List<Game> resultado = dataset.getGamesByPriceRangeBinary(20000, 30000);
         end = System.nanoTime();
-        System.out.printf("%-30s %-15s %.3f ms%n", "getGamesByPriceRange", "binarySearch", (end - start) / 1_000_000.0);
+        System.out.printf("%-30s %-15s %.3f ms (encontrados: %d)%n", "getGamesByPriceRange", "binarySearch", (end - start) / 1_000_000.0, resultado.size());
 
         // getGamesByCategory
         start = System.nanoTime();
